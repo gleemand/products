@@ -11,10 +11,13 @@ class ItemsList implements ItemsListInterface
 {
     private $fileName;
 
+    private $apiUrl;
+
     public function __construct(
         ContainerBagInterface $params
     ) {
         $this->fileName = __DIR__ . $params->get('app.items_file');
+        $this->apiUrl = $params->get('crm.api_url');
     }
 
     public function addItem(OrderProduct $item)
@@ -23,6 +26,8 @@ class ItemsList implements ItemsListInterface
             'name' => $item->offer->displayName,
             'quantity' => $item->quantity,
             'price' => $item->initialPrice,
+            'purchasePrice' => $item->purchasePrice,
+            'url' => $this->apiUrl . '?filter%5Bname%5D=' . ($item->offer->article ?? $item->offer->displayName),
             'statusDate' => (
                 new DateTime('now', new DateTimeZone('America/Bogota'))
             )->format('Y-m-d'),

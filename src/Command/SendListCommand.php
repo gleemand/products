@@ -39,21 +39,41 @@ class SendListCommand extends Command
         $headers .= "MIME-Version: 1.0\r\n";
         $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
         $message  = '<p><strong>Instar prod. al proveedor</strong></p>';
-        $message .= '<p><table border="1"><tr><th>Name</th><th>Quantity</th><th>Initial price</th><th>Status Changed</th></tr>';
+        $message .= '<p><table border="1"><tr><th>Producto</th><th>Cantidad</th><th>Precio de compra</th><th>Precio de venta</th><th>URL</th><th>Status Changed</th></tr>';
 
         $items = $this->list->getItems();
 
+        if (!count($items)) {
+            $io->success('NOTHING TO SEND');
+
+            return Command::SUCCESS;
+        }
+
+        $totalPrice = 0;
+        $totalPurchasePrice = 0;
+
         foreach ($items as $item) {
             $message .= sprintf(
-                '<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
+                '<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
                 $item['name'],
                 $item['quantity'],
+                $item['purchasePrice'],
                 $item['price'],
+                $item['url'],
                 $item['statusDate']
             );
+
+            $totalPrice += $item['price'];
+            $totalPurchasePrice += $item['purchasePrice'];
         }
 
         $message .= '</table></p>';
+
+        $message .= sprintf(
+            '<p>Total Precio de compra: %s</p><p>Total Precio de venta: %s</p>',
+            $item['purchasePrice'],
+            $item['price'],
+        );
 
         $result = mail($this->email, $subject, $message, $headers);
 
