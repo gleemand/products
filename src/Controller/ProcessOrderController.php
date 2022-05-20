@@ -19,7 +19,7 @@ class ProcessOrderController extends AbstractController
     }
 
     /**
-     * @Route("/processOrder", name="app_process_order")
+     * @Route("/", name="app_process_order")
      */
     public function index(Request $request): Response
     {

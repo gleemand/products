@@ -41,6 +41,8 @@ class ProcessOrder implements ProcessOrderInterface
 
         foreach ($packs as $pack) {
             if ('proveedor' === $pack->store) {
+                $isChanged = true;
+                
                 foreach ($orderChanges->items as $key => $item) {
                     if ($pack->item->id === $item->id) {
                         $this->list->addItem($item);
@@ -50,8 +52,6 @@ class ProcessOrder implements ProcessOrderInterface
                         continue 2;
                     }
                 }
-
-                $isChanged = true;
             }
         }
 
